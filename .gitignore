@@ -1,0 +1,38 @@
+# Dist directory (for compiled output) and  build artifacts
+server/dist/
+server/out/
+server/build/
+client/dist/
+client/out/
+client/build/
+
+# JS Code
+server/src/*.js
+server/src/*.js.map
+client/src/*.js
+client/src/*.js.map
+
+# Dependency directory
+client/node_modules/
+server/node_modules/
+
+# Optional npm cache directory
+client/.npm
+server/.npm
+
+# TypeScript cache
+client/*.tscache
+server/*.tscache
+
+# Temp files
+*.tmp
+*.temp
+
+# Editor settings
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA files
+.idea/
+
+
