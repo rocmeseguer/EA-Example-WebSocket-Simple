@@ -18,8 +18,9 @@
 │   │   └── index.ts
 │   ├── package.json    
 │   └── tsconfig.json
-├── TS-client
+├── client
 │   ├── src
+│   │   ├── models
 │   │   └── client.ts
 │   ├── package.json    
 │   └── tsconfig.json
@@ -49,7 +50,7 @@ node build/index.js
 ## Client
 Abrir un nuevo terminal
 ```
-cd TS-client
+cd client
 
 ```
 ### Instalar todas las dependencias

@@ -1,4 +1,4 @@
-import express from "express";
+
 import SocketIO from "socket.io";
 import * as http from "http";
 import { IMessage } from "../models/message";
@@ -11,7 +11,6 @@ const initializeSocket = (server: http.Server) => {
         }
     });
 
-    let nextVisitorNumber: number = 1;
 
     io.on('connection', (socket: SocketIO.Socket) => {
       console.log('Connected client', socket.id);
