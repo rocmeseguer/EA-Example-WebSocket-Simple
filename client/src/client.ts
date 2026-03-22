@@ -1,38 +1,25 @@
-import { io, Socket } from "socket.io-client";
-import { IMessage } from "./models/message";
+import { createSocket, setupSocketHandlers, sendMessage } from './socket';
+import { serverUrl, logger } from './config';
+import { IMessage } from './models/message';
 
-const SERVER_URL = "http://localhost:3000";
-
-// Function to define socket events
-const initializeSocketEvents = (socket: Socket): void => {
-    socket.on("connect", () => {
-        console.info(`Connected to the server with id: ${socket.id}`);
-    });
-
-    socket.on("disconnect", () => {
-        console.info("Disconnected from the server.");
-    });
-
-    socket.on("message", (msg: IMessage) => {
-        console.info(`[client](message) Received message: ${msg.content}`);
-    });
+const initializeClient = () => {
+    const socket = createSocket(serverUrl);
+    setupSocketHandlers(socket);
+    return socket;
 };
 
-// Function to send a message to the server
-const sendMessage = (socket: Socket, message: IMessage): void => {
-    socket.emit("message", message);
+const createHelloMessage = (): IMessage => ({
+    from: 'Client',
+    content: 'Hello from the client!'
+});
+
+const main = () => {
+    logger.info('Starting client...');
+    const socket = initializeClient();
+
+    setTimeout(() => {
+        sendMessage(socket, createHelloMessage());
+    }, 3000);
 };
 
-// Initialize connection
-const socket = io(SERVER_URL);
-initializeSocketEvents(socket);
-
-// Example usage: Send a message to the server
-const helloMessage: IMessage = {
-    from: "Client",
-    content: "Hello from the client!"
-};
-
-setTimeout(() => {
-    sendMessage(socket, helloMessage);
-}, 3000);
+main();
