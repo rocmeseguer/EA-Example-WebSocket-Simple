@@ -1,24 +1,29 @@
-import pino from 'pino';
+import pino, { Logger } from 'pino';
 
 /**
  * API CONFIGURATION
+ * Se lee el entorno una sola vez y se congela: el resto del código
+ * recibe valores inmutables y ya tipados (number, no string | number).
  */
+export interface IConfig {
+    readonly port: number;
+    readonly logLevel: string;
+}
 
-export const apiPort = process.env.PORT || 4000;
-export const config = {
-    logLevel: 'info',
-};
+export const config: Readonly<IConfig> = Object.freeze({
+    port: Number(process.env.PORT ?? 4000),
+    logLevel: process.env.LOG_LEVEL ?? 'info',
+});
 
 /**
  * PINO LOGGER CONFIGURATION
- * We use 'pino-pretty' in development for readable logs, 
- * but in production, it sends structured JSON.
+ * Preferible a console.log: niveles (debug/info/warn/error) y logs
+ * estructurados (objeto + mensaje). 'pino-pretty' los hace legibles en desarrollo.
  */
-
-export const logger = pino({
+export const logger: Logger = pino({
     level: config.logLevel,
     transport: {
-        target: 'pino-pretty', // Makes logs readable in the terminal
+        target: 'pino-pretty',
         options: {
             colorize: true,
             translateTime: 'HH:MM:ss Z',

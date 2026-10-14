@@ -1,25 +1,23 @@
-import { createSocket, setupSocketHandlers, sendMessage } from './socket';
-import { serverUrl, logger } from './config';
+import { createSocket, sendMessage, setupSocketHandlers, TypedSocket } from './socket';
+import { config, logger } from './config';
 import { IMessage } from './models/message';
 
-const initializeClient = () => {
-    const socket = createSocket(serverUrl);
-    setupSocketHandlers(socket);
-    return socket;
-};
-
-const createHelloMessage = (): IMessage => ({
-    from: 'Client',
-    content: 'Hello from the client!'
+// Función pura: mismo input -> mismo output, sin efectos secundarios
+const createHelloMessage = (from: string): IMessage => ({
+    from,
+    content: `Hello from ${from}!`,
 });
 
-const main = () => {
-    logger.info('Starting client...');
-    const socket = initializeClient();
+/**
+ * Reaccionamos al evento 'connect' en lugar de esperar con setTimeout:
+ * enviamos justo cuando hay conexión, ni antes (se perdería) ni tarde.
+ */
+const onConnect = (socket: TypedSocket): void =>
+    sendMessage(socket, createHelloMessage(config.clientName));
 
-    setTimeout(() => {
-        sendMessage(socket, createHelloMessage());
-    }, 3000);
+const main = (): void => {
+    logger.info({ serverUrl: config.serverUrl, clientName: config.clientName }, 'Starting client...');
+    setupSocketHandlers(createSocket(config.serverUrl), onConnect);
 };
 
 main();
